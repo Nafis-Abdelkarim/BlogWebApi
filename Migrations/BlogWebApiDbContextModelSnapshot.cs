@@ -22,7 +22,7 @@ namespace BlogWebApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BlogWebApi.Models.Category", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace BlogWebApi.Migrations
                     b.ToTable("Category", (string)null);
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.Post", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Post", b =>
                 {
                     b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
@@ -81,48 +81,14 @@ namespace BlogWebApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Post", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            PostId = 1,
-                            CategoryId = 1,
-                            Content = "This is a sample post content.",
-                            Created = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(491),
-                            LastModified = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(491),
-                            Title = "Sample Post 1",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            PostId = 2,
-                            CategoryId = 2,
-                            Content = "Another sample post content.",
-                            Created = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(492),
-                            LastModified = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(493),
-                            Title = "Sample Post 2",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            PostId = 3,
-                            CategoryId = 3,
-                            Content = "Another sample post content.",
-                            Created = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(493),
-                            LastModified = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(494),
-                            Title = "Sample Post 3",
-                            UserId = 3
-                        });
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.Role", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Role", b =>
                 {
-                    b.Property<int>("RoleId")
+                    b.Property<Guid>("RoleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("RoleID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -135,7 +101,7 @@ namespace BlogWebApi.Migrations
                     b.ToTable("Role", (string)null);
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.User", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -152,8 +118,8 @@ namespace BlogWebApi.Migrations
                     b.Property<DateTime?>("Registered")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("RoleId")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("RoleId")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("RoleID");
 
                     b.Property<string>("Username")
@@ -167,34 +133,16 @@ namespace BlogWebApi.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Password = "superadminpwd",
-                            Registered = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(410),
-                            RoleId = 1,
-                            Username = "superadmin"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            Password = "adminpwad",
-                            Registered = new DateTime(2023, 10, 31, 9, 36, 6, 875, DateTimeKind.Local).AddTicks(419),
-                            RoleId = 2,
-                            Username = "admin"
-                        });
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.Post", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Post", b =>
                 {
-                    b.HasOne("BlogWebApi.Models.Category", "Category")
+                    b.HasOne("BlogWebApi.Models.Domain.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("FK_Post_Category");
 
-                    b.HasOne("BlogWebApi.Models.User", "User")
+                    b.HasOne("BlogWebApi.Models.Domain.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Post_User");
@@ -204,9 +152,9 @@ namespace BlogWebApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.User", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.User", b =>
                 {
-                    b.HasOne("BlogWebApi.Models.Role", "Role")
+                    b.HasOne("BlogWebApi.Models.Domain.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .HasConstraintName("FK_User_Role");
@@ -214,17 +162,17 @@ namespace BlogWebApi.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.Category", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Category", b =>
                 {
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.Role", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.Role", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("BlogWebApi.Models.User", b =>
+            modelBuilder.Entity("BlogWebApi.Models.Domain.User", b =>
                 {
                     b.Navigation("Posts");
                 });

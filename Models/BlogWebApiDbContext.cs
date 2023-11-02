@@ -7,9 +7,7 @@ namespace BlogWebApi.Models;
 
 public partial class BlogWebApiDbContext : DbContext
 {
-    public BlogWebApiDbContext()
-    {
-    }
+    //private readonly IConfiguration _configuration;
 
     public BlogWebApiDbContext(DbContextOptions<BlogWebApiDbContext> options)
         : base(options)
@@ -24,8 +22,8 @@ public partial class BlogWebApiDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=.\\sqlexpress;Initial Catalog=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //=> optionsBuilder.UseSqlServer("Server=.\\sqlexpress;Initial Catalog=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

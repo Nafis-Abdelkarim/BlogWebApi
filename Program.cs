@@ -8,12 +8,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//string connString = builder.Configuration.GetConnectionString("Server=.\\sqlexpress;Initial Catalog=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True");
-
 // Add services to the container.
 builder.Services.AddDbContext<BlogWebApiDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=.\\sqlexpress;Initial Catalog=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddControllers();
