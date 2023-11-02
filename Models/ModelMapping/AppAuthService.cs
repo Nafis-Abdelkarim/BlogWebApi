@@ -11,9 +11,9 @@ namespace BlogWebApi.Models.ModelMapping
     {
         private readonly IConfiguration _configuration;
 
-        private readonly BlogWebApiDbContext _context;
+        private readonly BlogDbwebapiContext _context;
 
-        public AppAuthService(IConfiguration configuration, BlogWebApiDbContext context)
+        public AppAuthService(IConfiguration configuration, BlogDbwebapiContext context)
         {
             _configuration = configuration;
             _context = context;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using BlogWebApi.Models.Domain;
 
-namespace BlogWebApi.Models.Domain;
+namespace BlogWebApi.Models;
 
 public partial class Category
 {
-    public int CategoryId { get; set; }
+    public Guid CategoryId { get; set; }
 
     public string Name { get; set; } = null!;
 

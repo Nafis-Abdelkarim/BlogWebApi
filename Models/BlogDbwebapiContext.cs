@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using BlogWebApi.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogWebApi.Models;
 
-public partial class BlogWebApiDbContext : DbContext
+public partial class BlogDbwebapiContext : DbContext
 {
-    //private readonly IConfiguration _configuration;
+    public BlogDbwebapiContext()
+    {
+    }
 
-    public BlogWebApiDbContext(DbContextOptions<BlogWebApiDbContext> options)
+    public BlogDbwebapiContext(DbContextOptions<BlogDbwebapiContext> options)
         : base(options)
     {
     }
@@ -22,28 +23,32 @@ public partial class BlogWebApiDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //=> optionsBuilder.UseSqlServer("Server=.\\sqlexpress;Initial Catalog=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Blog_DBWEBAPI;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Category__19093A2B5DA359F6");
+            entity.HasKey(e => e.CategoryId).HasName("PK__NewCateg__19093A2B35CC56BC");
 
             entity.ToTable("Category");
 
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.CategoryId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("CategoryID");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.PostId).HasName("PK__Post__AA126038AA6C25D7");
+            entity.HasKey(e => e.PostId).HasName("PK__NewPost__AA126038826EBCD9");
 
             entity.ToTable("Post");
 
-            entity.Property(e => e.PostId).HasColumnName("PostID");
+            entity.Property(e => e.PostId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("PostID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Created).HasColumnType("datetime");
             entity.Property(e => e.LastModified).HasColumnType("datetime");
@@ -61,21 +66,25 @@ public partial class BlogWebApiDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3A67BBFFB8");
+            entity.HasKey(e => e.RoleId).HasName("PK__NewRole__8AFACE3A3ACADFE7");
 
             entity.ToTable("Role");
 
-            entity.Property(e => e.RoleId).HasColumnName("RoleID");
+            entity.Property(e => e.RoleId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("RoleID");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User__1788CCAC34576823");
+            entity.HasKey(e => e.UserId).HasName("PK__NewUser__1788CCAC70685AA9");
 
             entity.ToTable("User");
 
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("UserID");
             entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.Registered).HasColumnType("datetime");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
@@ -85,8 +94,6 @@ public partial class BlogWebApiDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_User_Role");
         });
-
-        //Seeding tables here
 
         OnModelCreatingPartial(modelBuilder);
     }

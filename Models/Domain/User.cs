@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using BlogWebApi.Models.Domain;
 
-namespace BlogWebApi.Models.Domain;
+namespace BlogWebApi.Models;
 
 public partial class User
 {
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
 
     public string Username { get; set; } = null!;
 
     public string Password { get; set; } = null!;
 
-    public int? RoleId { get; set; }
-    //public Guid? RoleId { get; set; }
+    public Guid? RoleId { get; set; }
 
     public DateTime? Registered { get; set; }
 

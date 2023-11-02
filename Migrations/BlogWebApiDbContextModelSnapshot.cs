@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogWebApi.Migrations
 {
-    [DbContext(typeof(BlogWebApiDbContext))]
+    [DbContext(typeof(BlogDbwebapiContext))]
     partial class BlogWebApiDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -24,12 +24,12 @@ namespace BlogWebApi.Migrations
 
             modelBuilder.Entity("BlogWebApi.Models.Domain.Category", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("CategoryID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<Guid>("CategoryId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -44,15 +44,15 @@ namespace BlogWebApi.Migrations
 
             modelBuilder.Entity("BlogWebApi.Models.Domain.Post", b =>
                 {
-                    b.Property<int>("PostId")
+                    b.Property<Guid>("PostId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("PostID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<Guid>("PostId"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("CategoryID");
 
                     b.Property<string>("Content")
@@ -69,8 +69,8 @@ namespace BlogWebApi.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("UserID");
 
                     b.HasKey("PostId")
@@ -103,12 +103,12 @@ namespace BlogWebApi.Migrations
 
             modelBuilder.Entity("BlogWebApi.Models.Domain.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("UserID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<Guid>("UserId"));
 
                     b.Property<string>("Password")
                         .IsRequired()

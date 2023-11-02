@@ -13,9 +13,9 @@ namespace BlogWebApi.Controllers
     [Route("[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly BlogWebApiDbContext _context;
+        private readonly BlogDbwebapiContext _context;
 
-        public PostController(BlogWebApiDbContext context)
+        public PostController(BlogDbwebapiContext context)
         {
             _context = context;
         }
@@ -32,7 +32,7 @@ namespace BlogWebApi.Controllers
         //get a single post by id
         [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPosById(int id)
+        public async Task<IActionResult> GetPosById(Guid id)
         {
             var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
             if (post == null)
@@ -59,7 +59,7 @@ namespace BlogWebApi.Controllers
                     CategoryId = category.CategoryId,
                     Title = model.Title,
                     Content = model.Content,
-                    UserId = 2, //Tempo solution i will change it after implementing the authentification
+                    //UserId = 2, //Tempo solution i will change it after implementing the authentification
                     Created = DateTime.Now,
                     LastModified = DateTime.Now
                 };
@@ -76,7 +76,7 @@ namespace BlogWebApi.Controllers
         //update an existing post 
         [Authorize(Roles = "admin")]
         [HttpPut("{postId}")]
-        public IActionResult UpdatePost(int postId, [FromBody] UpdatePostModel model) 
+        public IActionResult UpdatePost(Guid postId, [FromBody] UpdatePostModel model) 
         { 
             if (ModelState.IsValid)
             {
