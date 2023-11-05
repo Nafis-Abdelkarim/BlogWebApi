@@ -4,7 +4,9 @@ using BlogWebApi.Models.ModelMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace BlogWebApi.Controllers
 {
@@ -21,11 +23,13 @@ namespace BlogWebApi.Controllers
         }
 
         //get all posts
-        [Authorize(Roles = "admin")]
+        [Authorize(Policy = "AdminCanManageOwnPost")]
         [HttpGet]
         public async Task<IActionResult> GetAllPosts()
         {
-            var posts = await _context.Posts.ToListAsync();
+            //get the information of the currrent ID 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var posts = await _context.Posts.Where(post => post.UserId == new Guid(userId)).ToListAsync();
             return Ok(posts);
         }
 
@@ -53,13 +57,16 @@ namespace BlogWebApi.Controllers
                 var category = _context.Categories.SingleOrDefault(c => c.Name.Contains(model.CategoryName));
                 if (category == null) return BadRequest("Category not found");
 
+                //get the information of the currrent ID 
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
                 //Create a new post based on the given model 
                 var post = new Post
                 {
                     CategoryId = category.CategoryId,
                     Title = model.Title,
                     Content = model.Content,
-                    //UserId = 2, //Tempo solution i will change it after implementing the authentification
+                    UserId = new Guid(userId),
                     Created = DateTime.Now,
                     LastModified = DateTime.Now
                 };
