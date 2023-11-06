@@ -42,10 +42,6 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminCanManageOwnPost", policy => policy.RequireRole("admin"));
-});
 
 var app = builder.Build();
 

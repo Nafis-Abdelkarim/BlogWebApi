@@ -23,31 +23,20 @@ namespace BlogWebApi.Controllers
         }
 
         //get all posts
-        [Authorize(Policy = "AdminCanManageOwnPost")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllPosts()
         {
             //get the information of the currrent ID 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var posts = await _context.Posts.Where(post => post.UserId == new Guid(userId)).ToListAsync();
             return Ok(posts);
         }
 
-        //get a single post by id
-        [Authorize(Roles = "admin")]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPosById(Guid id)
-        {
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-            return Ok(post);
-        }
 
         //create new posts
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, superadmin")]
         [HttpPost]
         public IActionResult CreatePost([FromBody] CreatePostModel model)
         {
@@ -75,13 +64,13 @@ namespace BlogWebApi.Controllers
                 _context.Posts.Add(post);
                 _context.SaveChanges();
 
-                return Ok(); // Return success response
+                return Ok("Posted successfully"); // Return success response
             }
             return BadRequest(ModelState); //Return bad request if the model state is invalide
         }
 
         //update an existing post 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, superadmin")]
         [HttpPut("{postId}")]
         public IActionResult UpdatePost(Guid postId, [FromBody] UpdatePostModel model) 
         { 
@@ -92,42 +81,73 @@ namespace BlogWebApi.Controllers
 
                 if (post == null) return NotFound();
 
-                //Update its infromations
-                post.Title = model.Title;
-                post.Content = model.Content;
-                post.LastModified = DateTime.Now;
+                //Check the if the user is authoried own this post
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if(new Guid(userId) == post.UserId)
+                {
+                    //Update its infromations
+                    post.Title = model.Title;
+                    post.Content = model.Content;
+                    post.LastModified = DateTime.Now;
+                }
+                else return Forbid();
 
                 //save the changes
                 _context.SaveChanges();
                 return Ok();
             }
+            
             return BadRequest(ModelState);
         }
 
         //deleting an existing post
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, superadmin")]
         [HttpDelete("{postId}")]
-        public IActionResult DeletePost(int postId)
+        public IActionResult DeletePost(Guid postId)
         {
             //find and verify
             var post = _context.Posts.Find(postId);
             if (post == null) return NotFound();
 
-            //remove
-            _context.Posts.Remove(post);    
+            //Check the if the user is authoried own this post
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            //save changes
-            _context.SaveChanges();
-            return Ok();
+            if (new Guid(userId) == post.UserId)
+            {
+                //remove
+                _context.Posts.Remove(post);
+
+                //save changes
+                _context.SaveChanges();
+                return Ok("Deleted successfully");
+            }
+            else return Forbid();
         }
+
+        //get
 
         //Dashboard for only superadmin
         [Authorize(Roles = "superadmin")]
         [HttpGet]
         [Route("Dashboard")]
-        public string GetDashboard()
+        public async Task<IActionResult> GetDashboard()
         {
-            return "Hello SuperAdmin \n You are in the Dashboard";
-        } 
+            var posts = await _context.Posts.ToListAsync();
+            return Ok(posts);
+        }
+
+        //get a single post by id only for superadmin
+        [Authorize(Roles = "superadmin")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPosById(Guid id)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
+        }
     }
 }
