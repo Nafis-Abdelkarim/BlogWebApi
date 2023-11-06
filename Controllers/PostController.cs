@@ -72,7 +72,7 @@ namespace BlogWebApi.Controllers
         //update an existing post 
         [Authorize(Roles = "admin, superadmin")]
         [HttpPut("{postId}")]
-        public IActionResult UpdatePost(Guid postId, [FromBody] UpdatePostModel model) 
+        public IActionResult UpdatePost(Guid postId, [FromBody] UpdatePostDTO model) 
         { 
             if (ModelState.IsValid)
             {
@@ -142,12 +142,31 @@ namespace BlogWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPosById(Guid id)
         {
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
-            if (post == null)
+            //get the information of the currrent ID 
+            var CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //get the current user infromation
+            var user = _context.Users.Where(u => u.UserId == new Guid(CurrentUserId)).FirstOrDefault();
+
+            var post = await _context.Posts.Include(p => p.Category).FirstOrDefaultAsync(p => p.PostId == id);
+            if (post != null)
             {
-                return NotFound();
+                PostDTO postDTO = new()
+                {
+                    PostId = post.PostId,
+                    CategoryId = post.CategoryId,
+                    UserId = post.UserId,
+                    Title = post.Title,
+                    Content = post.Content,
+                    Created = post.Created,
+                    LastModified = post.LastModified,
+                    CategoryName = post.Category.Name,
+                    UserName = user.Username
+                };
+                return Ok(postDTO);
             }
-            return Ok(post);
+            return NotFound();
+
         }
     }
 }

@@ -19,7 +19,7 @@ namespace BlogWebApi.Models.ModelMapping
             _context = context;
         }
 
-        public async Task<Token> Authenticate(LoginUser loginUser)
+        public async Task<Token> Authenticate(LoginUserDTO loginUser)
         {
             //We check the inputs if its correct
             if (loginUser == null || string.IsNullOrEmpty(loginUser.Username) || string.IsNullOrEmpty(loginUser.Password))

@@ -3,6 +3,6 @@ namespace BlogWebApi.Models.ModelMapping
 {
     public interface IAppAuthService
     {
-        Task<Token> Authenticate(LoginUser loginUser);
+        Task<Token> Authenticate(LoginUserDTO loginUser);
     }
 }

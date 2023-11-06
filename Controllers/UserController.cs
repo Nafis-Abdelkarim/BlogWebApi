@@ -16,7 +16,7 @@ namespace BlogWebApi.Controllers
 
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> Authenticate(LoginUser loginUser)
+        public async Task<IActionResult> Authenticate(LoginUserDTO loginUser)
         {
             var token = await _appAuthService.Authenticate(loginUser);
             if(token == null)
