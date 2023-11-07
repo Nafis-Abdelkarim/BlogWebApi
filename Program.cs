@@ -1,3 +1,4 @@
+using BlogWebApi.Middleware;
 using BlogWebApi.Models;
 using BlogWebApi.Models.ModelMapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,6 +45,10 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+builder.Services.AddLogging();
+
+builder.Services.AddTransient<GlobaleExceptionHandlingMiddleware>(); //register our midddleware as a service
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,9 +60,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); //adding authentification feature
+app.UseAuthentication(); //Adding authentification service
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobaleExceptionHandlingMiddleware>(); //call the midddleware
 
 app.MapControllers();
 
