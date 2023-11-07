@@ -1,3 +1,4 @@
+using AutoMapper;
 using BlogWebApi.Models;
 using BlogWebApi.Models.Domain;
 using BlogWebApi.Models.ModelMapping;
@@ -16,10 +17,12 @@ namespace BlogWebApi.Controllers
     public class PostController : ControllerBase
     {
         private readonly BlogDbwebapiContext _context;
+        private readonly IMapper _mapper;
 
-        public PostController(BlogDbwebapiContext context)
+        public PostController(BlogDbwebapiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         //get all posts
@@ -95,7 +98,7 @@ namespace BlogWebApi.Controllers
 
                 //save the changes
                 _context.SaveChanges();
-                return Ok();
+                return Ok("Post has been updated");
             }
             
             return BadRequest(ModelState);
@@ -125,7 +128,6 @@ namespace BlogWebApi.Controllers
             else return Forbid();
         }
 
-        //get
 
         //Dashboard for only superadmin
         [Authorize(Roles = "superadmin")]
@@ -133,8 +135,14 @@ namespace BlogWebApi.Controllers
         [Route("Dashboard")]
         public async Task<IActionResult> GetDashboard()
         {
-            var posts = await _context.Posts.ToListAsync();
-            return Ok(posts);
+            var posts = _context.Posts.Include(p => p.Category)
+                                     .Include(p => p.User)
+                                     .Select(p => _mapper.Map<PostDTO>(p));
+            if (posts == null)
+            {
+                return Ok(posts);
+            }
+            else return NotFound("There is not posted yet");   
         }
 
         //get a single post by id only for superadmin
@@ -142,28 +150,13 @@ namespace BlogWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPosById(Guid id)
         {
-            //get the information of the currrent ID 
-            var CurrentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            //get the current user infromation
-            var user = _context.Users.Where(u => u.UserId == new Guid(CurrentUserId)).FirstOrDefault();
-
-            var post = await _context.Posts.Include(p => p.Category).FirstOrDefaultAsync(p => p.PostId == id);
+            //var post = await _context.Posts.Include(p => p.Category).FirstOrDefaultAsync(p => p.PostId == id);
+            var post = _context.Posts.Include(p => p.Category)
+                                     .Include(p => p.User)
+                                     .Select(p => _mapper.Map<PostDTO>(p));
             if (post != null)
             {
-                PostDTO postDTO = new()
-                {
-                    PostId = post.PostId,
-                    CategoryId = post.CategoryId,
-                    UserId = post.UserId,
-                    Title = post.Title,
-                    Content = post.Content,
-                    Created = post.Created,
-                    LastModified = post.LastModified,
-                    CategoryName = post.Category.Name,
-                    UserName = user.Username
-                };
-                return Ok(postDTO);
+                return Ok(post);
             }
             return NotFound();
 
