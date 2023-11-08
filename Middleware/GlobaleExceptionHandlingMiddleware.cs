@@ -26,12 +26,12 @@ namespace BlogWebApi.Middleware
                 ProblemDetails problem = new()
                 {
                     Status = (int)HttpStatusCode.InternalServerError,
-                    Type = "Server error",
-                    Title = "Server error",
-                    Detail = "An internal server has occurred"
+                    Type = "Access error",
+                    Title = "Access error",
+                    Detail = "The user have not the authrize to apply this action"
                 };
 
-                //return a json chrink
+                //return a json string to the reponse body
                 string json = JsonSerializer.Serialize(problem);
 
                 context.Response.ContentType = "application/json";

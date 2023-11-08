@@ -45,7 +45,11 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddLogging();
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole();   //Log to the console
+    builder.AddDebug();     //Log to the debug window
+});
 
 builder.Services.AddTransient<GlobaleExceptionHandlingMiddleware>(); //register our midddleware as a service
 
@@ -64,7 +68,9 @@ app.UseAuthentication(); //Adding authentification service
 
 app.UseAuthorization();
 
-app.UseMiddleware<GlobaleExceptionHandlingMiddleware>(); //call the midddleware
+//app.UseMiddleware<GlobaleExceptionHandlingMiddleware>(); //internal error middleware
+
+//app.UseMiddleware<LoggingMiddleware>();
 
 app.MapControllers();
 

@@ -138,7 +138,7 @@ namespace BlogWebApi.Controllers
             var posts = _context.Posts.Include(p => p.Category)
                                      .Include(p => p.User)
                                      .Select(p => _mapper.Map<PostDTO>(p));
-            if (posts == null)
+            if (posts != null)
             {
                 return Ok(posts);
             }
