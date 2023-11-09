@@ -52,7 +52,7 @@ namespace BlogWebApi.Controllers
                 //get the information of the currrent ID 
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                //Create a new post based on the given model 
+                //Create a new post based on the given model
                 var post = new Post
                 {
                     CategoryId = category.CategoryId,
@@ -67,7 +67,7 @@ namespace BlogWebApi.Controllers
                 _context.Posts.Add(post);
                 _context.SaveChanges();
 
-                return Ok("Posted successfully"); // Return success response
+                return Ok("Posted successfully"); //Return success response
             }
             return BadRequest(ModelState); //Return bad request if the model state is invalide
         }

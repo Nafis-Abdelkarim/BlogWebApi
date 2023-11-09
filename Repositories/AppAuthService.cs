@@ -1,11 +1,13 @@
-﻿using BlogWebApi.Models.Domain;
+﻿using BlogWebApi.Models;
+using BlogWebApi.Models.Domain;
+using BlogWebApi.Models.ModelMapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BlogWebApi.Models.ModelMapping
+namespace BlogWebApi.Repositories
 {
     public class AppAuthService : IAppAuthService
     {

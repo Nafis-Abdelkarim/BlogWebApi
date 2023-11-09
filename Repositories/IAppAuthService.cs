@@ -1,5 +1,7 @@
 ﻿using BlogWebApi.Models.Domain;
-namespace BlogWebApi.Models.ModelMapping
+using BlogWebApi.Models.ModelMapping;
+
+namespace BlogWebApi.Repositories
 {
     public interface IAppAuthService
     {

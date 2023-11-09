@@ -1,6 +1,6 @@
 using BlogWebApi.Middleware;
 using BlogWebApi.Models;
-using BlogWebApi.Models.ModelMapping;
+using BlogWebApi.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -68,9 +68,9 @@ app.UseAuthentication(); //Adding authentification service
 
 app.UseAuthorization();
 
-//app.UseMiddleware<GlobaleExceptionHandlingMiddleware>(); //internal error middleware
+app.UseMiddleware<GlobaleExceptionHandlingMiddleware>(); //internal error middleware
 
-//app.UseMiddleware<LoggingMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
 
 app.MapControllers();
 

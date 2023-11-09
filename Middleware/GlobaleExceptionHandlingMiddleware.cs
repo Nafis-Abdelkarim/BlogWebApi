@@ -22,13 +22,13 @@ namespace BlogWebApi.Middleware
                 _logger.LogError(ex, ex.Message);
 
                 //we return response with 500 error code
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
                 ProblemDetails problem = new()
                 {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Type = "Access error",
-                    Title = "Access error",
-                    Detail = "The user have not the authrize to apply this action"
+                    Status = (int)HttpStatusCode.OK,
+                    Type = "OK",
+                    Title = "Ok",
+                    Detail = "Ok"
                 };
 
                 //return a json string to the reponse body
